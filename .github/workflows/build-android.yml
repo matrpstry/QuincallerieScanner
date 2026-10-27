@@ -27,23 +27,28 @@ jobs:
     - name: Install Android SDK
       run: |
         wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O android-sdk.zip
-        unzip -q android-sdk.zip -d ~/android-sdk
-        export ANDROID_HOME=~/android-sdk
-        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/bin
-        yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses > /dev/null
-        sdkmanager --sdk_root=$ANDROID_HOME "platforms;android-34"
-        sdkmanager --sdk_root=$ANDROID_HOME "platform-tools"
-        sdkmanager --sdk_root=$ANDROID_HOME "build-tools;34.0.0"
-        sdkmanager --sdk_root=$ANDROID_HOME "emulator"
+        unzip -q android-sdk.zip -d $HOME/android-sdk
+        yes | $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses > /dev/null
+        $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-34"
+        $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools"
+        $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "build-tools;34.0.0"
+        $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "emulator"
+
+    - name: Create local.properties
+      run: |
+        echo "sdk.dir=$HOME/android-sdk" > local.properties
 
     - name: Set up environment variables
       run: |
-        echo "ANDROID_HOME=~/android-sdk" >> $GITHUB_ENV
-        echo "ANDROID_SDK_ROOT=~/android-sdk" >> $GITHUB_ENV
-        echo "PATH=$PATH:~/android-sdk/cmdline-tools/bin" >> $GITHUB_ENV
+        echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "PATH=$PATH:$HOME/android-sdk/cmdline-tools/bin" >> $GITHUB_ENV
 
     - name: Build Debug APK with Gradle
       run: gradle assembleDebug --stacktrace
+      env:
+        ANDROID_HOME: ${{ env.ANDROID_HOME }}
+        ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
 
     - name: Upload Debug APK artifact
       uses: actions/upload-artifact@v4
@@ -54,6 +59,9 @@ jobs:
 
     - name: Build Release APK with Gradle
       run: gradle assembleRelease --stacktrace
+      env:
+        ANDROID_HOME: ${{ env.ANDROID_HOME }}
+        ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
 
     - name: Upload Release APK artifact
       uses: actions/upload-artifact@v4
