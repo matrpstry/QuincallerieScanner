@@ -20,6 +20,9 @@ jobs:
         distribution: 'temurin'
         cache: 'gradle'
 
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+
     - name: Install Android SDK
       run: |
         wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O android-sdk.zip
@@ -38,11 +41,8 @@ jobs:
         echo "ANDROID_SDK_ROOT=~/android-sdk" >> $GITHUB_ENV
         echo "PATH=$PATH:~/android-sdk/cmdline-tools/bin" >> $GITHUB_ENV
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-
     - name: Build Debug APK with Gradle
-      run: ./gradlew assembleDebug --stacktrace
+      run: gradle assembleDebug --stacktrace
 
     - name: Upload Debug APK artifact
       uses: actions/upload-artifact@v4
@@ -52,7 +52,7 @@ jobs:
         retention-days: 30
 
     - name: Build Release APK with Gradle
-      run: ./gradlew assembleRelease --stacktrace
+      run: gradle assembleRelease --stacktrace
 
     - name: Upload Release APK artifact
       uses: actions/upload-artifact@v4
