@@ -3,6 +3,8 @@ package com.example.quincalleriescanner;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -113,20 +115,34 @@ public class MainActivity extends AppCompatActivity {
             resultsRecyclerView.setVisibility(View.GONE);
             scanAgainButton.setVisibility(View.GONE);
             
-            // Search all suppliers (no need for thread, it's local)
-            List<SupplierResult> results = SupplierAPI.searchAllSuppliers(barcode);
-            
-            // Always show results, even if empty
-            resultAdapter.updateResults(results);
-            progressBar.setVisibility(View.GONE);
-            resultsRecyclerView.setVisibility(View.VISIBLE);
-            scanAgainButton.setVisibility(View.VISIBLE);
-            
-            // If no results found, show message
-            if (results == null || results.isEmpty()) {
-                errorText.setText(R.string.no_results);
-                errorText.setVisibility(View.VISIBLE);
-            }
+            // Search all suppliers using web scraping (in background thread)
+            new Thread(() -> {
+                try {
+                    List<SupplierResult> results = WebScraper.searchAllSuppliers(barcode);
+                    
+                    // Post results to UI thread
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        progressBar.setVisibility(View.GONE);
+                        
+                        if (results != null && !results.isEmpty()) {
+                            resultAdapter.updateResults(results);
+                            resultsRecyclerView.setVisibility(View.VISIBLE);
+                            scanAgainButton.setVisibility(View.VISIBLE);
+                        } else {
+                            errorText.setText(R.string.no_results);
+                            errorText.setVisibility(View.VISIBLE);
+                            scanAgainButton.setVisibility(View.VISIBLE);
+                        }
+                    });
+                } catch (Exception e) {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        progressBar.setVisibility(View.GONE);
+                        errorText.setText("Erreur: " + e.getMessage());
+                        errorText.setVisibility(View.VISIBLE);
+                        scanAgainButton.setVisibility(View.VISIBLE);
+                    });
+                }
+            }).start();
         });
     }
     
