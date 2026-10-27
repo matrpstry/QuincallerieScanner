@@ -50,17 +50,12 @@ jobs:
         ANDROID_HOME: ${{ env.ANDROID_HOME }}
         ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
 
-    - name: List all files in app/build/outputs
-      run: find app/build/outputs -name "*.apk" -type f
+    - name: List APK files
+      run: ls -la app/build/outputs/apk/debug/
 
-    - name: Copy APK to workspace root
-      run: |
-        mkdir -p apk-output
-        cp app/build/outputs/apk/debug/app-debug.apk apk-output/QuincallerieScanner-debug.apk
-
-    - name: Upload APK artifact
+    - name: Upload APK directly
       uses: actions/upload-artifact@v4
       with:
         name: QuincallerieScanner-APK
-        path: apk-output/QuincallerieScanner-debug.apk
+        path: app/build/outputs/apk/debug/app-debug.apk
         retention-days: 90
