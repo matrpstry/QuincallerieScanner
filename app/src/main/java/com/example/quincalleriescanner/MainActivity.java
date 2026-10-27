@@ -110,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
             barcodeText.setText("Barcode: " + barcode);
             barcodeText.setVisibility(View.VISIBLE);
             errorText.setVisibility(View.GONE);
+            resultsRecyclerView.setVisibility(View.GONE);
+            scanAgainButton.setVisibility(View.GONE);
             
             // Search all suppliers
             new Thread(() -> {
@@ -120,10 +122,10 @@ public class MainActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
                         
                         if (results != null && !results.isEmpty()) {
-                            // Show results
-                            resultAdapter.updateResults(results);
+                            // Show results container
                             resultsRecyclerView.setVisibility(View.VISIBLE);
                             scanAgainButton.setVisibility(View.VISIBLE);
+                            resultAdapter.updateResults(results);
                         } else {
                             // Show error
                             errorText.setText(R.string.no_results);
@@ -134,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     runOnUiThread(() -> {
                         progressBar.setVisibility(View.GONE);
-                        errorText.setText(R.string.error_message);
+                        errorText.setText(R.string.error_message + "\n" + e.getMessage());
                         errorText.setVisibility(View.VISIBLE);
                         scanAgainButton.setVisibility(View.VISIBLE);
                     });
@@ -146,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
     private void resetScanner() {
         lastScannedBarcode = null;
         barcodeText.setText("Barcode: ");
-        barcodeText.setVisibility(View.VISIBLE);
+        barcodeText.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
         errorText.setVisibility(View.GONE);
         resultsRecyclerView.setVisibility(View.GONE);

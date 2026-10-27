@@ -4,23 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
+    android:background="#FFFFFF"
     tools:context=".MainActivity">
 
-    <!-- Camera Preview -->
-    <FrameLayout
-        android:id="@+id/cameraPreview"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:background="#000000"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Barcode Scanner Overlay -->
+    <!-- Barcode Scanner -->
     <com.journeyapps.barcodescanner.DecoratedBarcodeView
         android:id="@+id/barcodeScanner"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:visibility="visible"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintHeight_percent="0.7"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Scan Guide -->
@@ -28,14 +21,28 @@
         android:id="@+id/scanGuide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/barcode_hint"
-        android:textColor="@color/colorOnPrimary"
+        android:text="Pointez la caméra vers un code-barres"
+        android:textColor="#6200EE"
         android:textSize="16sp"
-        android:background="@drawable/scan_guide_bg"
-        android:padding="16dp"
+        android:background="#E0E0E0"
+        android:padding="12dp"
         app:layout_constraintBottom_toBottomOf="@id/barcodeScanner"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
+    <!-- Scanned Barcode Text -->
+    <TextView
+        android:id="@+id/barcodeText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Barcode: "
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:padding="8dp"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barcodeScanner" />
 
     <!-- Progress Bar -->
     <ProgressBar
@@ -45,19 +52,20 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/resultsContainer"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barcodeText" />
 
     <!-- Results Container -->
     <androidx.cardview.widget.CardView
         android:id="@+id/resultsContainer"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:visibility="gone"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barcodeScanner">
+        app:layout_constraintTop_toBottomOf="@id/barcodeText">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -65,31 +73,29 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Scanned Barcode -->
             <TextView
-                android:id="@+id/barcodeText"
+                android:id="@+id/resultsTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Résultats chez les fournisseurs"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:text="Barcode: " />
+                android:layout_marginBottom="16dp" />
 
-            <!-- Results List -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/resultsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:maxHeight="400dp" />
 
-            <!-- Scan Again Button -->
             <Button
                 android:id="@+id/scanAgainButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/scan_again"
+                android:text="Scanner à nouveau"
                 android:textAllCaps="false" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -99,12 +105,13 @@
         android:id="@+id/errorText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_results"
-        android:textColor="@color/colorNotAvailable"
+        android:text="Aucun résultat trouvé"
+        android:textColor="#F44336"
         android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barcodeText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
