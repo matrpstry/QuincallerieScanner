@@ -19,6 +19,12 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: 8.2.0
+        cache-disabled: true
+
     - name: Install Android SDK
       run: |
         wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O android-sdk.zip
@@ -38,30 +44,29 @@ jobs:
         echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
         echo "PATH=$PATH:$HOME/android-sdk/cmdline-tools/bin" >> $GITHUB_ENV
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-
     - name: Build Debug APK with Gradle
-      run: ./gradlew assembleDebug --stacktrace --no-daemon
+      run: gradle assembleDebug --stacktrace --no-daemon
       env:
         ANDROID_HOME: ${{ env.ANDROID_HOME }}
         ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
 
     - name: Upload Debug APK artifact
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: QuincallerieScanner-debug
         path: app/build/outputs/apk/debug/app-debug.apk
         retention-days: 30
 
     - name: Build Release APK with Gradle
-      run: ./gradlew assembleRelease --stacktrace --no-daemon
+      run: gradle assembleRelease --stacktrace --no-daemon
       env:
         ANDROID_HOME: ${{ env.ANDROID_HOME }}
         ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
 
     - name: Upload Release APK artifact
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: QuincallerieScanner-release
         path: app/build/outputs/apk/release/app-release.apk
