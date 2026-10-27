@@ -113,35 +113,20 @@ public class MainActivity extends AppCompatActivity {
             resultsRecyclerView.setVisibility(View.GONE);
             scanAgainButton.setVisibility(View.GONE);
             
-            // Search all suppliers
-            new Thread(() -> {
-                try {
-                    List<SupplierResult> results = SupplierAPI.searchAllSuppliers(barcode);
-                    
-                    runOnUiThread(() -> {
-                        progressBar.setVisibility(View.GONE);
-                        
-                        if (results != null && !results.isEmpty()) {
-                            // Show results container
-                            resultsRecyclerView.setVisibility(View.VISIBLE);
-                            scanAgainButton.setVisibility(View.VISIBLE);
-                            resultAdapter.updateResults(results);
-                        } else {
-                            // Show error
-                            errorText.setText(R.string.no_results);
-                            errorText.setVisibility(View.VISIBLE);
-                            scanAgainButton.setVisibility(View.VISIBLE);
-                        }
-                    });
-                } catch (Exception e) {
-                    runOnUiThread(() -> {
-                        progressBar.setVisibility(View.GONE);
-                        errorText.setText(R.string.error_message + "\n" + e.getMessage());
-                        errorText.setVisibility(View.VISIBLE);
-                        scanAgainButton.setVisibility(View.VISIBLE);
-                    });
-                }
-            }).start();
+            // Search all suppliers (no need for thread, it's local)
+            List<SupplierResult> results = SupplierAPI.searchAllSuppliers(barcode);
+            
+            // Always show results, even if empty
+            resultAdapter.updateResults(results);
+            progressBar.setVisibility(View.GONE);
+            resultsRecyclerView.setVisibility(View.VISIBLE);
+            scanAgainButton.setVisibility(View.VISIBLE);
+            
+            // If no results found, show message
+            if (results == null || results.isEmpty()) {
+                errorText.setText(R.string.no_results);
+                errorText.setVisibility(View.VISIBLE);
+            }
         });
     }
     

@@ -1,100 +1,119 @@
 package com.example.quincalleriescanner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import java.util.Map;
+import java.util.Random;
 
 public class SupplierAPI {
     
-    // Supplier URLs and search endpoints
-    private static final String LEGALLAIS_BASE = "https://www.legallais.com";
-    private static final String TRENOIS_BASE = "https://www.trenois-descamps.com";
-    private static final String COGEFERM_BASE = "https://www.cogeferm.com";
-    private static final String HAFELE_BASE = "https://www.hafele.fr";
-    private static final String FOUSSIER_BASE = "https://www.foussier.com";
+    // Base de données locale de produits connus (codes-barres -> références fournisseurs)
+    // Format: code-barres -> Liste de résultats par fournisseur
+    private static final Map<String, List<SupplierResult>> KNOWN_PRODUCTS = new HashMap<>();
     
-    // Note: Most hardware suppliers don't have public APIs, so we'll use web scraping simulation
-    // In a real app, you would need to implement proper web scraping with permissions
-    
-    public interface SearchService {
-        // Placeholder for potential API calls
+    // Initialisation avec des exemples de produits de quincaillerie
+    static {
+        // Vis - EAN 3000000000001
+        List<SupplierResult> visResults = new ArrayList<>();
+        visResults.add(new SupplierResult("Legallais", "3000000000001", true, "VIS-INOX-M6x20"));
+        visResults.add(new SupplierResult("Trenois Descamps", "3000000000001", true, "TD-VIS-001"));
+        visResults.add(new SupplierResult("Cogeferm", "3000000000001", true, "CF3001"));
+        visResults.add(new SupplierResult("Häfele", "3000000000001", false, null));
+        visResults.add(new SupplierResult("Foussier", "3000000000001", true, "FV-001"));
+        KNOWN_PRODUCTS.put("3000000000001", visResults);
+        
+        // Ecrou - EAN 3000000000002
+        List<SupplierResult> ecrouResults = new ArrayList<>();
+        ecrouResults.add(new SupplierResult("Legallais", "3000000000002", true, "ECROU-M6-GALV"));
+        ecrouResults.add(new SupplierResult("Trenois Descamps", "3000000000002", true, "TD-EC-002"));
+        ecrouResults.add(new SupplierResult("Cogeferm", "3000000000002", true, "CF3002"));
+        ecrouResults.add(new SupplierResult("Häfele", "3000000000002", true, "HF-EC-M6"));
+        ecrouResults.add(new SupplierResult("Foussier", "3000000000002", false, null));
+        KNOWN_PRODUCTS.put("3000000000002", ecrouResults);
+        
+        // Rondelle - EAN 3000000000003
+        List<SupplierResult> rondelleResults = new ArrayList<>();
+        rondelleResults.add(new SupplierResult("Legallais", "3000000000003", true, "ROND-M6-INOX"));
+        rondelleResults.add(new SupplierResult("Trenois Descamps", "3000000000003", true, "TD-RD-003"));
+        rondelleResults.add(new SupplierResult("Cogeferm", "3000000000003", false, null));
+        rondelleResults.add(new SupplierResult("Häfele", "3000000000003", true, "HF-RD-M6"));
+        rondelleResults.add(new SupplierResult("Foussier", "3000000000003", true, "FR-003"));
+        KNOWN_PRODUCTS.put("3000000000003", rondelleResults);
+        
+        // Charniere - EAN 3000000000004
+        List<SupplierResult> charniereResults = new ArrayList<>();
+        charniereResults.add(new SupplierResult("Legallais", "3000000000004", true, "CHAR-35mm"));
+        charniereResults.add(new SupplierResult("Trenois Descamps", "3000000000004", false, null));
+        charniereResults.add(new SupplierResult("Cogeferm", "3000000000004", true, "CF3004"));
+        charniereResults.add(new SupplierResult("Häfele", "3000000000004", true, "HF-CH-35"));
+        charniereResults.add(new SupplierResult("Foussier", "3000000000004", true, "FCH-35"));
+        KNOWN_PRODUCTS.put("3000000000004", charniereResults);
+        
+        // Serre-joint - EAN 3000000000005
+        List<SupplierResult> serreJointResults = new ArrayList<>();
+        serreJointResults.add(new SupplierResult("Legallais", "3000000000005", true, "SJ-150mm"));
+        serreJointResults.add(new SupplierResult("Trenois Descamps", "3000000000005", true, "TD-SJ-150"));
+        serreJointResults.add(new SupplierResult("Cogeferm", "3000000000005", false, null));
+        serreJointResults.add(new SupplierResult("Häfele", "3000000000005", false, null));
+        serreJointResults.add(new SupplierResult("Foussier", "3000000000005", true, "FSJ-150"));
+        KNOWN_PRODUCTS.put("3000000000005", serreJointResults);
+        
+        // Test codes for demo
+        List<SupplierResult> testResults = new ArrayList<>();
+        testResults.add(new SupplierResult("Legallais", "123456789012", true, "TEST-LGL"));
+        testResults.add(new SupplierResult("Trenois Descamps", "123456789012", true, "TEST-TD"));
+        testResults.add(new SupplierResult("Cogeferm", "123456789012", true, "TEST-CF"));
+        testResults.add(new SupplierResult("Häfele", "123456789012", true, "TEST-HF"));
+        testResults.add(new SupplierResult("Foussier", "123456789012", true, "TEST-FS"));
+        KNOWN_PRODUCTS.put("123456789012", testResults);
+        KNOWN_PRODUCTS.put("1234567890", testResults);
+        KNOWN_PRODUCTS.put("12345678", testResults);
     }
     
+    // Recherche dans la base de données locale
     public static List<SupplierResult> searchAllSuppliers(String barcode) {
         List<SupplierResult> results = new ArrayList<>();
         
-        // Search each supplier (simulated)
-        results.add(searchLegallais(barcode));
-        results.add(searchTrenoisDescamps(barcode));
-        results.add(searchCogeferm(barcode));
-        results.add(searchHafele(barcode));
-        results.add(searchFoussier(barcode));
+        // Normaliser le code-barres (supprimer les espaces, majuscules)
+        String normalizedBarcode = barcode != null ? barcode.trim().toUpperCase() : "";
+        
+        // Vérifier si on connaît ce code-barres
+        if (KNOWN_PRODUCTS.containsKey(normalizedBarcode)) {
+            return KNOWN_PRODUCTS.get(normalizedBarcode);
+        }
+        
+        // Si le code-barres est très long (EAN-13), essayer avec les derniers chiffres
+        if (normalizedBarcode.length() > 8) {
+            String shortCode = normalizedBarcode.substring(normalizedBarcode.length() - 8);
+            if (KNOWN_PRODUCTS.containsKey(shortCode)) {
+                return KNOWN_PRODUCTS.get(shortCode);
+            }
+        }
+        
+        // Si pas trouvé, retourner des résultats par défaut (tous non disponibles)
+        results.add(new SupplierResult("Legallais", normalizedBarcode, false, "Non référencé"));
+        results.add(new SupplierResult("Trenois Descamps", normalizedBarcode, false, "Non référencé"));
+        results.add(new SupplierResult("Cogeferm", normalizedBarcode, false, "Non référencé"));
+        results.add(new SupplierResult("Häfele", normalizedBarcode, false, "Non référencé"));
+        results.add(new SupplierResult("Foussier", normalizedBarcode, false, "Non référencé"));
         
         return results;
     }
     
-    private static SupplierResult searchLegallais(String barcode) {
-        // Simulate search - in real app, this would make an API call or scrape the website
-        // For demo purposes, we'll return simulated results
-        boolean available = simulateAvailability(barcode, "Legallais");
-        String reference = generateReference(barcode, "LGL");
-        return new SupplierResult("Legallais", barcode, available, reference);
+    // Ajouter un produit manuellement (pour étendre la base de données)
+    public static void addProduct(String barcode, List<SupplierResult> supplierResults) {
+        KNOWN_PRODUCTS.put(barcode, supplierResults);
     }
     
-    private static SupplierResult searchTrenoisDescamps(String barcode) {
-        boolean available = simulateAvailability(barcode, "Trenois");
-        String reference = generateReference(barcode, "TD");
-        return new SupplierResult("Trenois Descamps", barcode, available, reference);
+    // Vérifier si un code-barres est connu
+    public static boolean isKnownProduct(String barcode) {
+        String normalizedBarcode = barcode != null ? barcode.trim().toUpperCase() : "";
+        return KNOWN_PRODUCTS.containsKey(normalizedBarcode);
     }
     
-    private static SupplierResult searchCogeferm(String barcode) {
-        boolean available = simulateAvailability(barcode, "Cogeferm");
-        String reference = generateReference(barcode, "CF");
-        return new SupplierResult("Cogeferm", barcode, available, reference);
-    }
-    
-    private static SupplierResult searchHafele(String barcode) {
-        boolean available = simulateAvailability(barcode, "Häfele");
-        String reference = generateReference(barcode, "HF");
-        return new SupplierResult("Häfele", barcode, available, reference);
-    }
-    
-    private static SupplierResult searchFoussier(String barcode) {
-        boolean available = simulateAvailability(barcode, "Foussier");
-        String reference = generateReference(barcode, "FS");
-        return new SupplierResult("Foussier", barcode, available, reference);
-    }
-    
-    // Simulate availability based on barcode (for demo purposes)
-    private static boolean simulateAvailability(String barcode, String supplier) {
-        if (barcode == null || barcode.isEmpty()) {
-            return false;
-        }
-        
-        // Simulate that some products are available at some suppliers
-        // This is just for demonstration - real app would check actual availability
-        int hash = (barcode + supplier).hashCode();
-        return Math.abs(hash) % 3 != 0; // ~66% chance of being available
-    }
-    
-    // Generate a simulated reference number
-    private static String generateReference(String barcode, String prefix) {
-        if (barcode == null || barcode.isEmpty()) {
-            return "N/A";
-        }
-        
-        // Use last 6 digits of barcode + prefix
-        String lastDigits = barcode.length() >= 6 ? barcode.substring(barcode.length() - 6) : barcode;
-        return prefix + "-" + lastDigits;
-    }
-    
-    // Create Retrofit client (for potential future API integration)
-    public static Retrofit createRetrofitClient(String baseUrl) {
-        return new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+    // Obtenir le nombre de produits dans la base
+    public static int getProductCount() {
+        return KNOWN_PRODUCTS.size();
     }
 }
