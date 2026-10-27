@@ -32,7 +32,6 @@ jobs:
         $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-34"
         $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools"
         $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "build-tools;34.0.0"
-        $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "emulator"
 
     - name: Create local.properties
       run: |
@@ -45,7 +44,7 @@ jobs:
         echo "PATH=$PATH:$HOME/android-sdk/cmdline-tools/bin" >> $GITHUB_ENV
 
     - name: Build Debug APK with Gradle
-      run: gradle assembleDebug --stacktrace
+      run: gradle assembleDebug --stacktrace --no-daemon
       env:
         ANDROID_HOME: ${{ env.ANDROID_HOME }}
         ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
@@ -58,7 +57,7 @@ jobs:
         retention-days: 30
 
     - name: Build Release APK with Gradle
-      run: gradle assembleRelease --stacktrace
+      run: gradle assembleRelease --stacktrace --no-daemon
       env:
         ANDROID_HOME: ${{ env.ANDROID_HOME }}
         ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
