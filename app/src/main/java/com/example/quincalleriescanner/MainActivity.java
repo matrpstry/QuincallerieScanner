@@ -104,41 +104,55 @@ public class MainActivity extends AppCompatActivity implements SupplierScraper.S
         int productCount = dbHelper.getProductCount();
         if (productCount <= 2) {
             // Database has only sample data, ask user if they want to populate
-            showPopulateDatabaseDialog();
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                showPopulateDatabaseDialog();
+            }, 2000);
+        } else {
+            // Show the populate button for manual population
+            populateDatabaseButton.setVisibility(View.VISIBLE);
         }
     }
     
     private void showPopulateDatabaseDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Base de données vide");
-        builder.setMessage("La base de données contient seulement des exemples. Voulez-vous scraper les catalogues des fournisseurs pour obtenir tous les produits ? Cela peut prendre plusieurs minutes et nécessite une connexion Internet.");
-        builder.setPositiveButton("Oui, scraper maintenant", (dialog, which) -> {
-            startDatabasePopulation();
+        runOnUiThread(() -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Base de données vide");
+            builder.setMessage("La base de données contient seulement des exemples. Voulez-vous scraper les catalogues des fournisseurs pour obtenir tous les produits ? Cela peut prendre plusieurs minutes et nécessite une connexion Internet.");
+            builder.setPositiveButton("Oui, scraper maintenant", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    startDatabasePopulation();
+                }
+            });
+            builder.setNegativeButton("Non, plus tard", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    populateDatabaseButton.setVisibility(View.VISIBLE);
+                }
+            });
+            builder.setCancelable(false);
+            builder.create().show();
         });
-        builder.setNegativeButton("Non, plus tard", (dialog, which) -> {
-            // Continue with sample data
-            populateDatabaseButton.setVisibility(View.VISIBLE);
-        });
-        builder.setCancelable(false);
-        builder.create().show();
     }
     
     private void startDatabasePopulation() {
-        // Show scraping UI
-        scrapeProgressBar.setVisibility(View.VISIBLE);
-        scrapeStatusText.setVisibility(View.VISIBLE);
-        scrapeStatusText.setText("Début du scraping...");
-        populateDatabaseButton.setVisibility(View.GONE);
-        
-        // Reset counters
-        suppliersScraped = 0;
-        totalProductsFound = 0;
-        
-        // Clear existing data (except suppliers)
-        dbHelper.clearAllProducts();
-        
-        // Start scraping
-        supplierScraper.startScraping();
+        runOnUiThread(() -> {
+            // Show scraping UI
+            scrapeProgressBar.setVisibility(View.VISIBLE);
+            scrapeStatusText.setVisibility(View.VISIBLE);
+            scrapeStatusText.setText("Début du scraping...");
+            populateDatabaseButton.setVisibility(View.GONE);
+            
+            // Reset counters
+            suppliersScraped = 0;
+            totalProductsFound = 0;
+            
+            // Clear existing data (except suppliers)
+            dbHelper.clearAllProducts();
+            
+            // Start scraping
+            supplierScraper.startScraping();
+        });
     }
     
     @Override
