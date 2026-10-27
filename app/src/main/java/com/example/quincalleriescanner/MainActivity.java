@@ -115,34 +115,20 @@ public class MainActivity extends AppCompatActivity {
             resultsRecyclerView.setVisibility(View.GONE);
             scanAgainButton.setVisibility(View.GONE);
             
-            // Search all suppliers using web scraping (in background thread)
-            new Thread(() -> {
-                try {
-                    List<SupplierResult> results = WebScraper.searchAllSuppliers(barcode);
-                    
-                    // Post results to UI thread
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        progressBar.setVisibility(View.GONE);
-                        
-                        if (results != null && !results.isEmpty()) {
-                            resultAdapter.updateResults(results);
-                            resultsRecyclerView.setVisibility(View.VISIBLE);
-                            scanAgainButton.setVisibility(View.VISIBLE);
-                        } else {
-                            errorText.setText(R.string.no_results);
-                            errorText.setVisibility(View.VISIBLE);
-                            scanAgainButton.setVisibility(View.VISIBLE);
-                        }
-                    });
-                } catch (Exception e) {
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        progressBar.setVisibility(View.GONE);
-                        errorText.setText("Erreur: " + e.getMessage());
-                        errorText.setVisibility(View.VISIBLE);
-                        scanAgainButton.setVisibility(View.VISIBLE);
-                    });
-                }
-            }).start();
+            // Search using ProductDatabase (instant results)
+            List<SupplierResult> results = ProductDatabase.search(barcode);
+            
+            // Update UI with results
+            progressBar.setVisibility(View.GONE);
+            resultAdapter.updateResults(results);
+            resultsRecyclerView.setVisibility(View.VISIBLE);
+            scanAgainButton.setVisibility(View.VISIBLE);
+            
+            // Show message if product not found
+            if (!ProductDatabase.contains(barcode)) {
+                errorText.setText("Produit non trouvé dans la base. Essayez: 123456789012, 1234567890, 3000000000001");
+                errorText.setVisibility(View.VISIBLE);
+            }
         });
     }
     
