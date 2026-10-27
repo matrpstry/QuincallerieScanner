@@ -4,9 +4,5 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorBackground">@color/colorBackground</item>
-        <item name="colorSurface">@color/colorSurface</item>
-        <item name="colorOnPrimary">@color/colorOnPrimary</item>
-        <item name="colorOnSurface">@color/colorOnSurface</item>
     </style>
 </resources>
