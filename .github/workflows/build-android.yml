@@ -20,22 +20,27 @@ jobs:
         distribution: 'temurin'
         cache: 'gradle'
 
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
-      with:
-        accept-android-sdk-licenses: true
-        packages: |
-          platforms;android-34
-          platform-tools
-          build-tools;34.0.0
-          emulator
-          patcher;v4
+    - name: Install Android SDK
+      run: |
+        wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O android-sdk.zip
+        unzip -q android-sdk.zip -d ~/android-sdk
+        export ANDROID_HOME=~/android-sdk
+        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/bin
+        yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses > /dev/null
+        sdkmanager --sdk_root=$ANDROID_HOME "platforms;android-34"
+        sdkmanager --sdk_root=$ANDROID_HOME "platform-tools"
+        sdkmanager --sdk_root=$ANDROID_HOME "build-tools;34.0.0"
+        sdkmanager --sdk_root=$ANDROID_HOME "emulator"
+        sdkmanager --sdk_root=$ANDROID_HOME "patcher;v4"
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
     - name: Build Debug APK with Gradle
       run: ./gradlew assembleDebug --stacktrace
+      env:
+        ANDROID_HOME: ~/android-sdk
+        ANDROID_SDK_ROOT: ~/android-sdk
 
     - name: Upload Debug APK artifact
       uses: actions/upload-artifact@v4
@@ -46,6 +51,9 @@ jobs:
 
     - name: Build Release APK with Gradle
       run: ./gradlew assembleRelease --stacktrace
+      env:
+        ANDROID_HOME: ~/android-sdk
+        ANDROID_SDK_ROOT: ~/android-sdk
 
     - name: Upload Release APK artifact
       uses: actions/upload-artifact@v4
