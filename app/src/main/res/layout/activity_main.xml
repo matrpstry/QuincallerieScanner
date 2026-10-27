@@ -44,7 +44,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barcodeScanner" />
 
-    <!-- Progress Bar for scanning -->
+    <!-- Progress Bar -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
@@ -113,46 +113,5 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barcodeText" />
-
-    <!-- Scrape Progress Bar -->
-    <ProgressBar
-        android:id="@+id/scrapeProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/scrapeStatusText"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barcodeScanner" />
-
-    <!-- Scrape Status Text -->
-    <TextView
-        android:id="@+id/scrapeStatusText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textColor="#6200EE"
-        android:textSize="14sp"
-        android:visibility="gone"
-        android:layout_margin="16dp"
-        app:layout_constraintBottom_toTopOf="@id/populateDatabaseButton"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/scrapeProgressBar" />
-
-    <!-- Populate Database Button -->
-    <Button
-        android:id="@+id/populateDatabaseButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Remplir la base de donn\u00e9es"
-        android:textAllCaps="false"
-        android:backgroundTint="#6200EE"
-        android:textColor="#FFFFFF"
-        android:visibility="gone"
-        android:layout_margin="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
