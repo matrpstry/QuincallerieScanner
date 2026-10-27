@@ -16,6 +16,35 @@
         app:layout_constraintHeight_percent="0.7"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Manual Input Section -->
+    <LinearLayout
+        android:id="@+id/manualInputSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barcodeScanner">
+        
+        <EditText
+            android:id="@+id/manualBarcodeInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Entrer code-barres manuellement"
+            android:inputType="number"
+            android:maxLines="1" />
+        
+        <Button
+            android:id="@+id/searchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rechercher"
+            android:textAllCaps="false" />
+    </LinearLayout>
+
     <!-- Scan Guide -->
     <TextView
         android:id="@+id/scanGuide"
