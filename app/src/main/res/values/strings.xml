@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Quincallerie Scanner</string>
+    <string name="scan_barcode">Scanner le code-barres</string>
+    <string name="searching">Recherche en cours...</string>
+    <string name="no_results">Aucun résultat trouvé</string>
+    <string name="available">Disponible</string>
+    <string name="not_available">Non disponible</string>
+    <string name="supplier_legallais">Legallais</string>
+    <string name="supplier_trenois">Trenois Descamps</string>
+    <string name="supplier_cogeferm">Cogeferm</string>
+    <string name="supplier_hafele">Häfele</string>
+    <string name="supplier_foussier">Foussier</string>
+    <string name="reference">Référence</string>
+    <string name="supplier">Fournisseur</string>
+    <string name="status">Statut</string>
+    <string name="scan_again">Scanner à nouveau</string>
+    <string name="product_info">Informations produit</string>
+    <string name="barcode_hint">Pointez la caméra vers un code-barres</string>
+    <string name="error_title">Erreur</string>
+    <string name="error_message">Une erreur est survenue lors de la recherche</string>
+    <string name="permission_denied">Permission refusée</string>
+    <string name="permission_required">L\'accès à la caméra est nécessaire pour scanner les codes-barres</string>
+</resources>
