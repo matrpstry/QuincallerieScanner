@@ -32,14 +32,17 @@ jobs:
         sdkmanager --sdk_root=$ANDROID_HOME "build-tools;34.0.0"
         sdkmanager --sdk_root=$ANDROID_HOME "emulator"
 
+    - name: Set up environment variables
+      run: |
+        echo "ANDROID_HOME=~/android-sdk" >> $GITHUB_ENV
+        echo "ANDROID_SDK_ROOT=~/android-sdk" >> $GITHUB_ENV
+        echo "PATH=$PATH:~/android-sdk/cmdline-tools/bin" >> $GITHUB_ENV
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
     - name: Build Debug APK with Gradle
       run: ./gradlew assembleDebug --stacktrace
-      env:
-        ANDROID_HOME: ~/android-sdk
-        ANDROID_SDK_ROOT: ~/android-sdk
 
     - name: Upload Debug APK artifact
       uses: actions/upload-artifact@v4
@@ -50,9 +53,6 @@ jobs:
 
     - name: Build Release APK with Gradle
       run: ./gradlew assembleRelease --stacktrace
-      env:
-        ANDROID_HOME: ~/android-sdk
-        ANDROID_SDK_ROOT: ~/android-sdk
 
     - name: Upload Release APK artifact
       uses: actions/upload-artifact@v4
