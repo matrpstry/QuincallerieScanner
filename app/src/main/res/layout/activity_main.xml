@@ -21,11 +21,50 @@
         android:id="@+id/scanGuide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pointez la caméra vers un code-barres"
+        android:text="Pointez la cam\u00e9ra vers un code-barres"
         android:textColor="#6200EE"
         android:textSize="16sp"
         android:background="#E0E0E0"
         android:padding="12dp"
+        app:layout_constraintBottom_toBottomOf="@id/barcodeScanner"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <!-- Scrape Progress Bar -->
+    <ProgressBar
+        android:id="@+id/scrapeProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/scrapeStatusText"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <!-- Scrape Status Text -->
+    <TextView
+        android:id="@+id/scrapeStatusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="#6200EE"
+        android:textSize="14sp"
+        android:visibility="gone"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toTopOf="@id/populateDatabaseButton"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <!-- Populate Database Button -->
+    <Button
+        android:id="@+id/populateDatabaseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remplir la base de donn\u00e9es"
+        android:textAllCaps="false"
+        android:backgroundTint="#6200EE"
+        android:textColor="#FFFFFF"
+        android:visibility="gone"
+        android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="@id/barcodeScanner"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
@@ -77,7 +116,7 @@
                 android:id="@+id/resultsTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Résultats chez les fournisseurs"
+                android:text="R\u00e9sultats chez les fournisseurs"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:gravity="center"
@@ -95,7 +134,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Scanner à nouveau"
+                android:text="Scanner \u00e0 nouveau"
                 android:textAllCaps="false" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -105,7 +144,7 @@
         android:id="@+id/errorText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Aucun résultat trouvé"
+        android:text="Aucun r\u00e9sultat trouv\u00e9"
         android:textColor="#F44336"
         android:textSize="16sp"
         android:visibility="gone"
